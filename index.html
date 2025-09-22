@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maitri - Wellness Monitor</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Link to your external CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Left Column: Maitri Assistant -->
+        <div class="card">
+            <div class="card-header">
+                <h2>MAITRI</h2>
+                <p>Mental Wellness Assistant</p>
+            </div>
+            <div class="content-box maitri-box">
+                <div id="chat-log">
+                    <div class="message bot-message">
+                        <div class="avatar"></div>
+                        <p>I'm here to help. How are you feeling today?</p>
+                    </div>
+                </div>
+                <div class="input-area" id="input-area">
+                    <input type="text" id="user-input" placeholder="Tell me how you feel or press the mic to talk">
+                    <button id="mic-button" class="icon-button"><i class="fa-solid fa-microphone"></i></button>
+                    <button id="send-button" class="icon-button"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Wellness Monitor -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Wellness Monitor</h2>
+                    <p>Ambient Emotional Stress Detection</p>
+                </div>
+            </div>
+            <div class="content-box monitor-box">
+                <video id="video-feed" class="hidden" autoplay muted playsinline></video>
+
+                <div id="camera-preview" class="hidden">
+                    <video id="preview-video" autoplay muted playsinline></video>
+                </div>
+
+                <div id="audio-visualizer" class="hidden">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+
+                <div id="initial-state-container">
+                    <!-- ICON REPLACED HERE with SVG Astronaut -->
+                    <svg id="placeholder-icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <g fill="none" stroke="currentColor" stroke-width="4">
+                            <!-- Helmet -->
+                            <circle cx="100" cy="100" r="70" />
+                            <!-- Visor -->
+                            <path d="M155 105 A 55 50 0 0 1 45 105" fill="currentColor" opacity="0.2" />
+                            <!-- Body -->
+                            <path d="M50 150 Q100 180 150 150 L140 190 Q100 210 60 190 Z" fill="currentColor"
+                                opacity="0.4" />
+                            <!-- Antenna -->
+                            <line x1="60" y1="75" x2="40" y2="45" />
+                            <circle cx="40" cy="45" r="5" fill="currentColor" />
+                        </g>
+                    </svg>
+                    <div id="device-selectors">
+                        <div class="selector-group"><label for="camera-select">Camera Source:</label><select
+                                id="camera-select"></select></div>
+                        <div class="selector-group"><label for="mic-select">Microphone Source:</label><select
+                                id="mic-select"></select></div>
+                    </div>
+                </div>
+
+                <!-- UNIFIED CONTROL BAR - ALWAYS VISIBLE -->
+                <div id="monitor-controls-container">
+                    <div id="audio-controls">
+                        <i class="fa-solid fa-microphone"></i>
+                        <label class="switch">
+                            <input type="checkbox" id="audio-toggle-checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <button id="start-stop-button" class="start-button">
+                        <i class="fa-solid fa-play"></i> Start
+                    </button>
+                    <button id="camera-preview-toggle" class="icon-button-outline"><i
+                            class="fa-solid fa-camera"></i></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to your external JavaScript file -->
+    <script src="script.js"></script>
+</body>
+
+</html>
