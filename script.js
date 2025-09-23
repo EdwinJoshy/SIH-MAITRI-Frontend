@@ -39,7 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageContent = document.createElement('div');
         messageContent.classList.add('message-content');
         if (typeof content === 'string') {
-            messageContent.innerHTML = `<p>${content}</p>`;
+            const p = document.createElement('p');
+            p.textContent = content;
+            messageContent.appendChild(p);
         } else {
             messageContent.appendChild(content); // Append element like a video
         }
@@ -49,12 +51,80 @@ document.addEventListener('DOMContentLoaded', () => {
         chatLog.scrollTop = chatLog.scrollHeight;
     };
 
+    // --- ENHANCED: Hardcoded Responses with Dynamic Multi-Emotion Feedback ---
     const handleSendMessage = () => {
         const userText = userInput.value.trim();
         if (userText) {
             addMessage(userText, 'user');
             userInput.value = '';
-            setTimeout(() => addMessage("That's interesting. Tell me more.", 'bot'), 1000);
+
+            const lowerCaseText = userText.toLowerCase();
+
+            const emotionData = {
+                sad: {
+                    keywords: ['sad', 'depressed', 'unhappy', 'down', 'crying', 'miserable', 'lonely'],
+                    measure: "For sadness, acknowledging the feeling is a healthy first step. You could try some gentle self-care, like listening to calming music, or perhaps writing down your thoughts."
+                },
+                angry: {
+                    keywords: ['angry', 'mad', 'furious', 'irritated', 'annoyed', 'pissed off', 'frustrated'],
+                    measure: "To counter anger, it's helpful to find a healthy outlet. Taking a step back to breathe deeply, going for a short walk, or even listening to intense music can help process that energy."
+                },
+                surprised: {
+                    keywords: ['surprised', 'shocked', 'amazed', 'wow', 'unbelievable', 'no way', 'startled'],
+                    measure: "Surprise can be a lot to take in! Give yourself a moment to just sit with the feeling and let it settle. Acknowledging the unexpected helps in processing it."
+                },
+                fear: {
+                    keywords: ['scared', 'afraid', 'fearful', 'terrified', 'anxious', 'worried', 'nervous'],
+                    measure: "When feeling fear or anxiety, grounding techniques can be very effective. Try the 5-4-3-2-1 method: name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, and 1 you can taste."
+                },
+                happy: {
+                    keywords: ['happy', 'excited', 'great', 'joyful', 'thrilled', 'elated', 'fantastic'],
+                    measure: "It's wonderful that you're feeling happy! A great way to savor this feeling is to share it with someone or to take a moment to practice gratitude. Think of three things you're thankful for right now."
+                },
+                disgust: {
+                    keywords: ['disgusted', 'gross', 'revolted', 'sickened', 'repulsed', 'awful'],
+                    measure: "Disgust is a strong protective emotion. It can be helpful to create some distance from what's causing it. Shifting your focus to something pleasant, like a nice scent or a beautiful image, can help reset your state of mind."
+                }
+            };
+
+            let detectedEmotions = [];
+            for (const emotion in emotionData) {
+                if (emotionData[emotion].keywords.some(keyword => lowerCaseText.includes(keyword))) {
+                    detectedEmotions.push(emotion);
+                }
+            }
+
+            let botResponse = "";
+
+            if (detectedEmotions.length > 1) {
+                const hasPositive = detectedEmotions.includes('happy') || detectedEmotions.includes('surprised');
+                const hasNegative = detectedEmotions.some(e => ['sad', 'angry', 'fear', 'disgust'].includes(e));
+
+                if (hasPositive && hasNegative) {
+                    // DYNAMIC FEEDBACK FOR MIXED EMOTIONS (e.g., happy and sad)
+                    botResponse = `It sounds like you're experiencing some conflicting feelings, like ${detectedEmotions.join(' and ')}. This is very common, and it's okay to feel a mix of things.\n\nA helpful technique for moments like this is 'mindful observation.' Instead of fighting the feelings, just acknowledge them. You can say to yourself, 'I notice I'm feeling happy about one thing, and also sad about another.' By observing without judgment, you give yourself space to understand this complex emotional state.`;
+
+                } else {
+                    // TAILORED FEEDBACK FOR MULTIPLE (SIMILAR) EMOTIONS
+                    botResponse = `It sounds like you're dealing with a complex mix of feelings, including ${detectedEmotions.join(' and ')}. It's perfectly okay to feel multiple things at once. Let's address them.\n\n`;
+                    botResponse += "Here are some individual suggestions that might help:\n";
+                    detectedEmotions.forEach(emotion => {
+                        botResponse += `\n- For feeling ${emotion}: ${emotionData[emotion].measure}`;
+                    });
+                }
+
+            } else if (detectedEmotions.length === 1) {
+                // INDIVIDUAL SOLUTION FOR A SINGLE EMOTION
+                const emotion = detectedEmotions[0];
+                botResponse = `It sounds like you're feeling ${emotion}. I'm here to listen.\n\nHere is a suggestion that might help:\n- ${emotionData[emotion].measure}`;
+
+            } else if (lowerCaseText.includes('hello') || lowerCaseText.includes('hi')) {
+                botResponse = "Hello there! It's good to hear from you. How are you feeling today?";
+            } else {
+                botResponse = "Thank you for sharing. Could you elaborate a bit more on that?";
+            }
+
+            setTimeout(() => addMessage(botResponse, 'bot'), 1000);
         }
     };
 
@@ -71,7 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
         recognition.onend = () => { isChatRecording = false; chatMicButton.classList.remove('recording'); inputArea.classList.remove('listening'); userInput.placeholder = "Tell me how you feel or press the mic to talk"; };
         recognition.onerror = (event) => { console.error("Speech recognition error:", event.error); userInput.placeholder = "Sorry, I couldn't hear that."; };
         recognition.onresult = (event) => {
-            let interimTranscript = '', finalTranscript = '';
+            let interimTranscript = '',
+                finalTranscript = '';
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) { finalTranscript += event.results[i][0].transcript; } else { interimTranscript += event.results[i][0].transcript; }
             }
