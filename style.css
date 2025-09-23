@@ -112,6 +112,8 @@ body {
     padding: 12px 18px;
     border-radius: 18px;
     line-height: 1.5;
+    white-space: pre-wrap;
+    /* Allows line breaks in the response */
 }
 
 .bot-message {
